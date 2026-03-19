@@ -35,6 +35,12 @@ Create a production build:
 npm run build
 ```
 
+Run lint checks:
+
+```bash
+npm run lint
+```
+
 Preview the production build locally:
 
 ```bash
