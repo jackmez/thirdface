@@ -121,7 +121,7 @@ function getPrefersReducedMotion() {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches
 }
 
-function BrandMark({ opacity, scale, lineScale, lineOpacity, middleOpacity }) {
+function BrandMark({ opacity, lineOpacity, topLineY, bottomLineY }) {
   return (
     <motion.svg
       className="brand-icon"
@@ -134,7 +134,6 @@ function BrandMark({ opacity, scale, lineScale, lineOpacity, middleOpacity }) {
         x: '-50%',
         y: '-50%',
         opacity,
-        scale,
       }}
     >
       <rect width="58" height="67" fill="black" />
@@ -142,27 +141,23 @@ function BrandMark({ opacity, scale, lineScale, lineOpacity, middleOpacity }) {
         d={brandMarkPaths.top}
         fill="white"
         style={{
+          y: topLineY,
           opacity: lineOpacity,
-          scaleX: lineScale,
-          originX: 0.5,
-          originY: 0.5,
         }}
       />
       <motion.path
         d={brandMarkPaths.middle}
         fill="white"
         style={{
-          opacity: middleOpacity,
+          opacity: lineOpacity,
         }}
       />
       <motion.path
         d={brandMarkPaths.bottom}
         fill="white"
         style={{
+          y: bottomLineY,
           opacity: lineOpacity,
-          scaleX: lineScale,
-          originX: 0.5,
-          originY: 0.5,
         }}
       />
     </motion.svg>
@@ -235,10 +230,9 @@ export default function App() {
     mass: prefersReducedMotion ? 1 : 0.42,
   })
   const iconOpacity = useTransform(smoothIconReveal, [0, 0.2, 1], [0, 0.78, 1])
-  const iconScale = useTransform(smoothIconReveal, [0, 1], [0.96, 1])
-  const iconLineScale = useTransform(smoothIconReveal, [0, 0.78, 1], [0, 0.92, 1])
   const iconLineOpacity = useTransform(smoothIconReveal, [0, 0.12, 1], [0, 0.88, 1])
-  const iconMiddleOpacity = useTransform(smoothIconReveal, [0, 0.35, 0.78, 1], [0, 0, 0.52, 1])
+  const topLineY = useTransform(smoothIconReveal, [0, 1], [28, 0])
+  const bottomLineY = useTransform(smoothIconReveal, [0, 1], [-28, 0])
 
   useEffect(() => {
     function handleResize() {
@@ -447,10 +441,9 @@ export default function App() {
 
             <BrandMark
               opacity={iconOpacity}
-              scale={iconScale}
-              lineScale={iconLineScale}
               lineOpacity={iconLineOpacity}
-              middleOpacity={iconMiddleOpacity}
+              topLineY={topLineY}
+              bottomLineY={bottomLineY}
             />
           </motion.div>
         </motion.div>
