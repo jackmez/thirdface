@@ -1,0 +1,207 @@
+@font-face {
+  font-family: "Season Mix";
+  src: url("./assets/SeasonMix-Regular-Dm5k_1Bi.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+:root {
+  --color-surface: #ffffff;
+  --color-text: #111111;
+  --color-overlay-text: rgba(255, 255, 255, 0.94);
+  --glow-shadow: 0 4px 20px rgba(0, 123, 255, 0.35);
+  --font-serif-display: "Season Mix", "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
+
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--color-text);
+  background: var(--color-surface);
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-width: 320px;
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--color-surface);
+}
+
+.app-shell,
+.app-shell * {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.app-shell {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background: var(--color-surface);
+}
+
+.video-frame-shell {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.video-frame {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-surface);
+  will-change: width, height;
+  contain: layout paint;
+  isolation: isolate;
+}
+
+.video-frame::after {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.12;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.22) 0, transparent 22%),
+    radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.16) 0, transparent 18%),
+    radial-gradient(circle at 30% 80%, rgba(0, 0, 0, 0.2) 0, transparent 20%),
+    radial-gradient(circle at 70% 75%, rgba(0, 0, 0, 0.16) 0, transparent 16%);
+  background-size: 180px 180px, 240px 240px, 210px 210px, 260px 260px;
+  background-position: 0 0, 40px 60px, 90px 120px, 10px 30px;
+  mix-blend-mode: soft-light;
+  animation: grain-drift 10s steps(6) infinite;
+}
+
+.background-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  z-index: 0;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+.quote-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+}
+
+.quote-text {
+  margin: 0;
+  position: relative;
+  width: fit-content;
+  max-width: min(92vw, 52rem);
+  color: var(--color-overlay-text);
+  text-align: center;
+  font-family: var(--font-serif-display);
+  font-size: clamp(1rem, 1.9vw, 1.45rem);
+  line-height: 0.6;
+  letter-spacing: 0.01em;
+  text-shadow: var(--glow-shadow);
+  justify-self: center;
+}
+
+.quote-line {
+  display: block;
+  white-space: nowrap;
+  margin-bottom: 0.5rem;
+}
+
+.quote-line:last-child {
+  margin-bottom: 0;
+}
+
+.quote-word {
+  display: inline-block;
+  margin-right: 0.36em;
+}
+
+.quote-line:last-child .quote-word:last-child {
+  margin-right: 0;
+}
+
+.brand-text {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  color: var(--color-overlay-text);
+  text-align: center;
+  font-family: var(--font-serif-display);
+  font-size: clamp(1rem, 1.9vw, 1.45rem);
+  letter-spacing: 0.02em;
+  text-shadow: var(--glow-shadow);
+  pointer-events: none;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@keyframes grain-drift {
+  0% {
+    transform: translate3d(-2%, -1%, 0);
+  }
+
+  25% {
+    transform: translate3d(1%, -2%, 0);
+  }
+
+  50% {
+    transform: translate3d(-1%, 1%, 0);
+  }
+
+  75% {
+    transform: translate3d(2%, 0, 0);
+  }
+
+  100% {
+    transform: translate3d(-2%, -1%, 0);
+  }
+}
+
+@media (max-width: 700px) {
+  .quote-wrap {
+    padding: 1.25rem;
+  }
+
+  .quote-line {
+    white-space: normal;
+    margin-bottom: 0.35rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .video-frame::after {
+    animation: none;
+  }
+}
