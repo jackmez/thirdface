@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { motion } from 'motion/react'
+import { motion, useScroll, useSpring, useTransform } from 'motion/react'
 import skyVideo from './assets/sky-web.mp4'
 
 const INTRO_PHASE = {
@@ -62,6 +62,14 @@ const easing = {
   brandReveal: [0.18, 0.84, 0.2, 1],
 }
 
+const brandMarkPaths = {
+  top: 'M54.2278 0.0192871C55.348 0.0192871 55.908 0.0192871 56.3358 0.237274C56.7121 0.429021 57.0181 0.734982 57.2099 1.11131C57.4278 1.53913 57.4278 2.09918 57.4278 3.21929V5.59409C57.4278 6.7142 57.4278 7.27425 57.2099 7.70207C57.0181 8.0784 56.7121 8.38436 56.3358 8.57611C55.908 8.79409 55.3479 8.79409 54.2278 8.79409H3.5916C2.4715 8.79409 1.91144 8.79409 1.48362 8.57611C1.1073 8.38436 0.801335 8.0784 0.609589 7.70207C0.391602 7.27425 0.391602 6.7142 0.391602 5.59409V3.21929C0.391602 2.09918 0.391602 1.53913 0.609589 1.11131C0.801335 0.734982 1.1073 0.429021 1.48362 0.237274C1.91144 0.0192871 2.4715 0.0192871 3.5916 0.0192871H54.2278Z',
+  middle:
+    'M45.4531 28.7638C46.5732 28.7638 47.1333 28.7638 47.5611 28.9818C47.9374 29.1735 48.2434 29.4795 48.4351 29.8558C48.6531 30.2836 48.6531 30.8437 48.6531 31.9638V34.3386C48.6531 35.4587 48.6531 36.0188 48.4351 36.4466C48.2434 36.8229 47.9374 37.1289 47.5611 37.3206C47.1333 37.5386 46.5732 37.5386 45.4531 37.5386H12.3665C11.2464 37.5386 10.6863 37.5386 10.2585 37.3206C9.8822 37.1289 9.57624 36.8229 9.38449 36.4466C9.1665 36.0188 9.1665 35.4587 9.1665 34.3386V31.9638C9.1665 30.8437 9.1665 30.2836 9.38449 29.8558C9.57624 29.4795 9.8822 29.1735 10.2585 28.9818C10.6863 28.7638 11.2464 28.7638 12.3665 28.7638H45.4531Z',
+  bottom:
+    'M54.2278 57.5085C55.3479 57.5085 55.908 57.5085 56.3358 57.7265C56.7121 57.9183 57.0181 58.2242 57.2099 58.6006C57.4278 59.0284 57.4278 59.5884 57.4278 60.7085L57.4278 63.0834C57.4278 64.2035 57.4278 64.7635 57.2099 65.1913C57.0181 65.5677 56.7121 65.8736 56.3358 66.0654C55.908 66.2834 55.3479 66.2834 54.2278 66.2834L3.5916 66.2834C2.47149 66.2834 1.91144 66.2834 1.48362 66.0654C1.10729 65.8736 0.801333 65.5677 0.609587 65.1913C0.3916 64.7635 0.3916 64.2035 0.3916 63.0834L0.391601 60.7085C0.391601 59.5884 0.391601 59.0284 0.609588 58.6006C0.801335 58.2242 1.1073 57.9183 1.48362 57.7265C1.91144 57.5085 2.4715 57.5085 3.5916 57.5085L54.2278 57.5085Z',
+}
+
 const wordVariants = {
   hidden: {
     opacity: 0,
@@ -113,12 +121,61 @@ function getPrefersReducedMotion() {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches
 }
 
+function BrandMark({ opacity, scale, lineScale, lineOpacity, middleOpacity }) {
+  return (
+    <motion.svg
+      className="brand-icon"
+      viewBox="0 0 58 67"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      initial={false}
+      aria-hidden="true"
+      style={{
+        x: '-50%',
+        y: '-50%',
+        opacity,
+        scale,
+      }}
+    >
+      <rect width="58" height="67" fill="black" />
+      <motion.path
+        d={brandMarkPaths.top}
+        fill="white"
+        style={{
+          opacity: lineOpacity,
+          scaleX: lineScale,
+          originX: 0.5,
+          originY: 0.5,
+        }}
+      />
+      <motion.path
+        d={brandMarkPaths.middle}
+        fill="white"
+        style={{
+          opacity: middleOpacity,
+        }}
+      />
+      <motion.path
+        d={brandMarkPaths.bottom}
+        fill="white"
+        style={{
+          opacity: lineOpacity,
+          scaleX: lineScale,
+          originX: 0.5,
+          originY: 0.5,
+        }}
+      />
+    </motion.svg>
+  )
+}
+
 export default function App() {
   const videoRef = useRef(null)
   const [viewport, setViewport] = useState(getViewportState)
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(getPrefersReducedMotion)
   const [isMediaReady, setIsMediaReady] = useState(false)
   const [phase, setPhase] = useState(INTRO_PHASE.loading)
+  const { scrollY } = useScroll()
 
   const hasIntroStarted = phase !== INTRO_PHASE.loading
   const isSettled =
@@ -127,6 +184,61 @@ export default function App() {
     phase === INTRO_PHASE.complete
   const isQuoteExiting = phase === INTRO_PHASE.revealBrand || phase === INTRO_PHASE.complete
   const isBrandVisible = phase === INTRO_PHASE.complete
+  const isScrollUnlocked = phase === INTRO_PHASE.complete
+  const scrollDistance = isScrollUnlocked
+    ? Math.max(viewport.frameSize * 1.35, viewport.height * 1.2)
+    : 0
+  const videoTravelDistance = viewport.frameSize + 48
+  const scrollOffset = useTransform(() => {
+    if (!isScrollUnlocked) {
+      return 0
+    }
+
+    return Math.min(scrollY.get(), scrollDistance)
+  })
+  const smoothScrollOffset = useSpring(scrollOffset, {
+    stiffness: prefersReducedMotion ? 1000 : 120,
+    damping: prefersReducedMotion ? 100 : 24,
+    mass: prefersReducedMotion ? 1 : 0.35,
+  })
+  const videoTranslateY = useTransform(() => {
+    if (!isScrollUnlocked) {
+      return 0
+    }
+
+    const progress = Math.min(smoothScrollOffset.get() / Math.max(scrollDistance, 1), 1)
+    return -(progress * videoTravelDistance)
+  })
+  const brandOpacity = useTransform(() => {
+    if (!isScrollUnlocked) {
+      return isBrandVisible ? 1 : 0
+    }
+
+    const progress = Math.min(smoothScrollOffset.get() / Math.max(scrollDistance, 1), 1)
+    return Math.max(1 - (progress * 3.5), 0)
+  })
+  const iconRevealProgress = useTransform(() => {
+    if (!isScrollUnlocked) {
+      return 0
+    }
+
+    const progress = Math.min(smoothScrollOffset.get() / Math.max(scrollDistance, 1), 1)
+    if (progress <= 0.72) {
+      return 0
+    }
+
+    return Math.min((progress - 0.72) / 0.2, 1)
+  })
+  const smoothIconReveal = useSpring(iconRevealProgress, {
+    stiffness: prefersReducedMotion ? 1000 : 160,
+    damping: prefersReducedMotion ? 100 : 24,
+    mass: prefersReducedMotion ? 1 : 0.42,
+  })
+  const iconOpacity = useTransform(smoothIconReveal, [0, 0.2, 1], [0, 0.78, 1])
+  const iconScale = useTransform(smoothIconReveal, [0, 1], [0.96, 1])
+  const iconLineScale = useTransform(smoothIconReveal, [0, 0.78, 1], [0, 0.92, 1])
+  const iconLineOpacity = useTransform(smoothIconReveal, [0, 0.12, 1], [0, 0.88, 1])
+  const iconMiddleOpacity = useTransform(smoothIconReveal, [0, 0.35, 0.78, 1], [0, 0, 0.52, 1])
 
   useEffect(() => {
     function handleResize() {
@@ -242,7 +354,13 @@ export default function App() {
   }, [phase, prefersReducedMotion])
 
   return (
-    <main className="app-shell" aria-labelledby="site-title">
+    <main
+      className={`app-shell${isScrollUnlocked ? ' app-shell--scroll-unlocked' : ''}`}
+      aria-labelledby="site-title"
+      style={{
+        minHeight: isScrollUnlocked ? `calc(100vh + ${scrollDistance}px)` : '100vh',
+      }}
+    >
       <h1 id="site-title" className="sr-only">
         thirdface
       </h1>
@@ -270,6 +388,7 @@ export default function App() {
             playsInline
             preload="auto"
             initial={false}
+            style={{ y: videoTranslateY }}
             animate={{ opacity: hasIntroStarted ? 1 : 0 }}
             transition={{
               duration: prefersReducedMotion ? 0 : wordRevealDuration,
@@ -313,8 +432,8 @@ export default function App() {
             <motion.p
               className="brand-text"
               initial={false}
+              style={{ opacity: brandOpacity }}
               animate={{
-                opacity: isBrandVisible ? 1 : 0,
                 y: isBrandVisible ? 0 : 9,
                 filter: isBrandVisible ? 'blur(0px)' : 'blur(4px)',
               }}
@@ -325,9 +444,25 @@ export default function App() {
             >
               thirdface
             </motion.p>
+
+            <BrandMark
+              opacity={iconOpacity}
+              scale={iconScale}
+              lineScale={iconLineScale}
+              lineOpacity={iconLineOpacity}
+              middleOpacity={iconMiddleOpacity}
+            />
           </motion.div>
         </motion.div>
       </div>
+
+      {isScrollUnlocked ? (
+        <div
+          className="scroll-runway"
+          aria-hidden="true"
+          style={{ height: `${scrollDistance}px` }}
+        />
+      ) : null}
     </main>
   )
 }

@@ -35,6 +35,7 @@ export default [
       ...react.configs.flat.recommended.rules,
       ...react.configs.flat['jsx-runtime'].rules,
       ...reactHooks.configs.recommended.rules,
+      'react/prop-types': 'off',
     },
   },
   {
