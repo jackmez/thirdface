@@ -37,4 +37,12 @@ export default [
       ...reactHooks.configs.recommended.rules,
     },
   },
+  {
+    files: ['middleware.js'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+    },
+  },
 ]
