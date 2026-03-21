@@ -79,18 +79,18 @@ body {
   content: "";
   position: absolute;
   inset: -20%;
-  z-index: 1;
+  z-index: 2;
   pointer-events: none;
-  opacity: 0.12;
+  opacity: 0.2;
   background-image:
-    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.22) 0, transparent 22%),
-    radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.16) 0, transparent 18%),
-    radial-gradient(circle at 30% 80%, rgba(0, 0, 0, 0.2) 0, transparent 20%),
-    radial-gradient(circle at 70% 75%, rgba(0, 0, 0, 0.16) 0, transparent 16%);
-  background-size: 180px 180px, 240px 240px, 210px 210px, 260px 260px;
-  background-position: 0 0, 40px 60px, 90px 120px, 10px 30px;
+    radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.3) 0, transparent 18%),
+    radial-gradient(circle at 76% 26%, rgba(255, 255, 255, 0.22) 0, transparent 14%),
+    radial-gradient(circle at 28% 78%, rgba(0, 0, 0, 0.28) 0, transparent 17%),
+    radial-gradient(circle at 72% 72%, rgba(0, 0, 0, 0.2) 0, transparent 14%);
+  background-size: 120px 120px, 170px 170px, 140px 140px, 190px 190px;
+  background-position: 0 0, 32px 48px, 72px 96px, 8px 20px;
   mix-blend-mode: soft-light;
-  animation: grain-drift 10s steps(6) infinite;
+  animation: grain-drift 7s steps(8) infinite;
 }
 
 .background-video {
@@ -100,7 +100,7 @@ body {
   height: 100%;
   object-fit: cover;
   display: block;
-  z-index: 0;
+  z-index: 1;
   will-change: transform;
   pointer-events: none;
   -webkit-user-drag: none;
@@ -109,7 +109,7 @@ body {
 .quote-wrap {
   position: absolute;
   inset: 0;
-  z-index: 2;
+  z-index: 3;
   display: grid;
   place-items: center;
   padding: 2rem;
@@ -180,7 +180,7 @@ body {
   max-width: 1.11rem;
   height: auto;
   transform-origin: center;
-  z-index: 2;
+  z-index: 0;
   pointer-events: none;
   -webkit-user-drag: none;
   filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.22));

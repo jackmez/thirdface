@@ -136,7 +136,6 @@ function BrandMark({ opacity, lineOpacity, topLineY, bottomLineY }) {
         opacity,
       }}
     >
-      <rect width="58" height="67" fill="black" />
       <motion.path
         d={brandMarkPaths.top}
         fill="white"
@@ -372,6 +371,13 @@ export default function App() {
             ease: easing.frameSettle,
           }}
         >
+          <BrandMark
+            opacity={iconOpacity}
+            lineOpacity={iconLineOpacity}
+            topLineY={topLineY}
+            bottomLineY={bottomLineY}
+          />
+
           <motion.video
             ref={videoRef}
             className="background-video"
@@ -438,13 +444,6 @@ export default function App() {
             >
               thirdface
             </motion.p>
-
-            <BrandMark
-              opacity={iconOpacity}
-              lineOpacity={iconLineOpacity}
-              topLineY={topLineY}
-              bottomLineY={bottomLineY}
-            />
           </motion.div>
         </motion.div>
       </div>
